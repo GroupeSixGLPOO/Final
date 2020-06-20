@@ -51,7 +51,7 @@ public class RegForm extends javax.swing.JFrame{
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel0.setText("Welcome to ChatLine, please or create your account!");
+        jLabel0.setText("Welcome to ChatLine, please create your account!");
 
         jLabel1.setText("Name :");
 

@@ -77,7 +77,10 @@ public class MainForm extends javax.swing.JFrame{
         ////////////////////////////////////////////////////
         ListContacts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ListContactsMouseClicked(evt);
+                if(!ListContacts.getValueIsAdjusting()){
+                    ListContactsMouseClicked(evt);
+                }
+
             }
         });
 
@@ -106,88 +109,31 @@ public class MainForm extends javax.swing.JFrame{
     private void ListContactsMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
 
-
-        if(ListContacts.getSelectedIndex()==0)
-            return;
-
-        Contact bfContact,gfContact;
-        //获取gf实体的信息
-        gfContact=(Contact)
-                ListContacts.getSelectedValue();
-
-        Contact tmpContact = new Contact();
-        tmpContact.setUid(this.currUID);
-
-        int idx = this.contactsModel.indexOf(tmpContact);
-
-        bfContact=(Contact)contactsModel.elementAt(idx);
-
-        ChatBox chatBox= getChatBox(bfContact,gfContact);
-//						new ChatBox(bfContact,gfContact);
-        gfContact.setSender(false);
-        chatBox.setVisible(true);
+//
+//        if(ListContacts.getSelectedIndex()==0)
+//            return;
+          System.out.println(ListContacts.getSelectedValue());
+//        Contact bfContact,gfContact;
+//        //获取gf实体的信息
+//        gfContact=(Contact)
+//                ListContacts.getSelectedValue();
+//
+//        Contact tmpContact = new Contact();
+//        tmpContact.setUid(this.currUID);
+//
+//        int idx = this.contactsModel.indexOf(tmpContact);
+//
+//        bfContact=(Contact)contactsModel.elementAt(idx);
+//
+//        ChatBox chatBox= getChatBox(bfContact,gfContact);
+////						new ChatBox(bfContact,gfContact);
+//        gfContact.setSender(false);
+//        chatBox.setVisible(true);
 
 
     }
 
 
-
-//    public void refreshContact(boolean isInit){
-//        // TODO Auto-generated method stub
-//        // TODO add your handling code here:
-//        ContactHandler contactHandler = new ContactHandler();
-//        Vector<Contact> allContacts = (Vector<Contact>)contactHandler.ReturnContacts();
-//
-//        int size = allContacts.size();
-//        //注意：实例化 contactsModel！！！
-//
-//        /**************************************************/
-//        DefaultListModel oldModel = contactsModel;
-//        contactsModel = new DefaultListModel();
-//        contactsModel.setSize(size); // Copy data from vector allContacts to list contactsModel
-//        /******************************************/
-//
-//        int onidx = 1, offidx = size - 1;
-//        Contact contact = null;
-//        Contact oldContact = null;
-//        int tmpUid;
-//
-//        for (int i = 0; i < size; i++) {
-//            contact = allContacts.elementAt(i);
-//            tmpUid=contact.getUid();
-//
-//            if(!isInit){
-//
-//                oldContact=
-//                        getContactByuid(tmpUid, oldModel);
-//                contact.setSender(
-//                        oldContact.isSender());
-//            }
-//            if(tmpUid == currUID){
-//                //将自己置于首行0号位置
-//                contactsModel.setElementAt(contact, 0);
-//                continue;
-//            }
-//
-//            if(contact.getOnline() == 1){
-//                contactsModel.setElementAt(contact, onidx);
-//                onidx++;
-//                //好友在线,将实体与索引存入contactsModel中，onidx索引递增。
-//            }
-//            else{
-//                //最后，将排好序的contactsModel放入ListContacts中。
-//                //<span style="font-size: 18px; font-family: Arial, Helvetica, sans-serif; background-color: rgb(255, 255, 255);">  </span>
-//                contactsModel.setElementAt(contact, offidx);
-//                offidx--;
-//            }
-//        }
-//
-//        //refresh 之后，将contactsModel中内容放到公共存储区中
-//        // After refreshing, put the contents of contactsModel (HashTable) into the public storage area
-//        SystemRegistry.getSysReg().put("contactsModel", contactsModel);
-//        System.out.println(contactsModel);
-//
-//    }
 
     private Contact getContactByuid(int uid,DefaultListModel Model){
         // 通过参数uid找到列表中索引从而找到相应的实体对象contact
@@ -200,36 +146,7 @@ public class MainForm extends javax.swing.JFrame{
         return resultContact;
     }
 
-//    public void PutBoxRegistry(){
-//        try {
-//            ChatInfo chatInfo = new ChatInfo();
-//            // 类方法setSysReg调用getSysReg()方法返回一个唯一的sysReg对象，sysReg是类型为<String,Object>的HashTable容器
-//            // 将对象sysReg中String为“boxRegistry”的内容赋予boxRegistry
-//            Hashtable<Contact, ChatBox> boxRegistry = (Hashtable<Contact, ChatBox>) SystemRegistry.getSysReg().get("boxRegistry");
-//            // 将String为“contactsModel”的内容赋予contactModel
-//            DefaultListModel contactsModel = (DefaultListModel) SystemRegistry.getSysReg().get("contactsModel");
-//
-//            int senderId = chatInfo.getSenderId();
-//            int receiverId = chatInfo.getReceiverId();
-//
-//            Contact gfContact = getContactByuid(senderId, contactsModel);
-//            gfContact.setSender(true);
-//
-//            Contact bfContact = getContactByuid(receiverId, contactsModel);
-//            ChatBox chatBox = boxRegistry.get(gfContact);
-//
-//            if (chatBox == null) {
-//                chatBox = new ChatBox(bfContact, gfContact);
-//                boxRegistry.put(gfContact, chatBox);
-//            }
-//            chatBox.appendMsg(chatInfo.getContent());
-//            System.out.println(chatInfo);
-//            System.out.println("****************************Chat Online************************");
-//        }catch (Exception e) {
-//            // TODO: handle exception
-//            e.printStackTrace();
-//        }
-//    }
+
 
     private ChatBox getChatBox(Contact bfContact,Contact gfContact){
 
