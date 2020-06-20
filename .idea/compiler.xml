@@ -10,5 +10,6 @@
         <module name="Final" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="14" />
   </component>
 </project>
