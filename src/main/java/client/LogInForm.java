@@ -232,9 +232,6 @@ public class LogInForm extends javax.swing.JFrame{
         if(logInHandler.ConfirmInformation(loginfo) == true){
             JOptionPane.showMessageDialog(this,"Login success");
 
-//            ChatBox chatBox = new ChatBox();
-//            chatBox.setVisible(true);
-
             MainForm mainForm = new MainForm(uid);
             mainForm.setVisible(true);
         }else{

@@ -350,11 +350,11 @@ public class RegForm extends javax.swing.JFrame{
 
     }
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegForm().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new RegForm().setVisible(true);
+//            }
+//        });
+//    }
 }

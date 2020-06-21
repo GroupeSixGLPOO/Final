@@ -25,7 +25,7 @@ public class ChatBox extends javax.swing.JFrame{
         this.gfContact = gfContact;
         setDefaultCloseOperation(HIDE_ON_CLOSE);
 
-        setTitle(bfContact.getUname() + "is chatting with"
+        setTitle(bfContact.getUname() + " is chatting with "
                 + gfContact.getUname());
     }
 
@@ -155,11 +155,22 @@ public class ChatBox extends javax.swing.JFrame{
             JOptionPane.showMessageDialog(this,"Please enter text!");
         }
         ChatInfo chatInfo = new ChatInfo();
+        chatInfo.setSenderId(bfContact.getUid());
+        chatInfo.setReceiverId(gfContact.getUid());
+
         Date now = new Date(System.currentTimeMillis());
         String sentTime = now.toString();
 
+        /**************************************************************/
         chatInfo.setSendTime(sentTime);
         System.out.println(sentTime);
+
+        String content = sentTime + "\n" + bfContact.getUname() + "  Said to"
+                + gfContact.getUname() + ":\n" + txtChat.getText() + "\n";
+
+        chatInfo.setContent(content);
+        txtChat.setText("");
+        txtHist.append(content);
     }
 
     public void appendMsg(String msg) {
@@ -171,12 +182,12 @@ public class ChatBox extends javax.swing.JFrame{
         // TODO add your handling code here:
     }
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                //new ChatBox().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                //new ChatBox().setVisible(true);
+//            }
+//        });
+//    }
 
 }

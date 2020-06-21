@@ -1,13 +1,10 @@
 package client;
 
-import entity.ChatInfo;
 import entity.Contact;
 import server.ContactHandler;
+import server.LogOffHandler;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.Hashtable;
 import java.util.Vector;
 
 public class MainForm extends javax.swing.JFrame{
@@ -23,26 +20,17 @@ public class MainForm extends javax.swing.JFrame{
     //
 
     /** Creates new form NetFORM */
-    private int currUID;
-    private Hashtable<Contact,ChatBox> boxRegistry;
+    private int logUID;
 
 
     public MainForm( int uid){
+
+        this.logUID = uid;
         initComponents();
 
-        this.currUID = uid;
-        this.boxRegistry=new Hashtable<Contact,ChatBox>();
-
-//        SystemRegistry.getSysReg().put("boxRegistry",this.boxRegistry);
-//        System.out.println(boxRegistry);
         setTitle(""+uid);
 
         ListContacts.setCellRenderer(new ContactsList());
-
-
-
-//        refreshContact(true);
-
 
     }
 
@@ -61,15 +49,15 @@ public class MainForm extends javax.swing.JFrame{
 
         ListContacts.setModel(new javax.swing.AbstractListModel() {
 
-            ContactHandler contactHandler = new ContactHandler();
-            Vector<Contact> allContacts = (Vector<Contact>)contactHandler.ReturnContacts();
-
+//            ContactHandler contactHandler = new ContactHandler();
+//            Vector<Contact> allContacts = (Vector<Contact>)contactHandler.ReturnContacts();
+            DefaultListModel contactmodel = refreshContact(true);
             public int getSize() {
-                return allContacts.size();
+                return contactmodel.size();
             }
 
             public Object getElementAt(int i) {
-                return allContacts.get(i);
+                return contactmodel.get(i);
             }
         });
         ////////////////////////////////////////////////////
@@ -109,34 +97,93 @@ public class MainForm extends javax.swing.JFrame{
     private void ListContactsMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
 
-//
-//        if(ListContacts.getSelectedIndex()==0)
-//            return;
+
+        if(ListContacts.getSelectedIndex()==0){
+            JOptionPane.showMessageDialog(this,"You cannot chat with yourself, please choose another contact");
+            return;
+        }
+
           System.out.println(ListContacts.getSelectedValue());
-//        Contact bfContact,gfContact;
-//        //获取gf实体的信息
-//        gfContact=(Contact)
-//                ListContacts.getSelectedValue();
-//
-//        Contact tmpContact = new Contact();
-//        tmpContact.setUid(this.currUID);
-//
-//        int idx = this.contactsModel.indexOf(tmpContact);
-//
-//        bfContact=(Contact)contactsModel.elementAt(idx);
-//
-//        ChatBox chatBox= getChatBox(bfContact,gfContact);
-////						new ChatBox(bfContact,gfContact);
-//        gfContact.setSender(false);
-//        chatBox.setVisible(true);
+
+        Contact bfContact,gfContact;
+
+        gfContact=(Contact)
+                ListContacts.getSelectedValue();
+
+//        System.out.println(gfContact.getUid());
+
+//        System.out.println("contactsModel "+contactsModel.elementAt(0));
+
+        bfContact=(Contact)contactsModel.elementAt(0);
+
+        ChatBox chatBox = new ChatBox(bfContact,gfContact);
+        gfContact.setSender(false);
+        chatBox.setVisible(true);
 
 
+    }
+
+    public DefaultListModel refreshContact(boolean isInit){
+        // TODO Auto-generated method stub
+        // TODO add your handling code here:
+        ContactHandler contactHandler = new ContactHandler();
+        Vector<Contact> allContacts = (Vector<Contact>)contactHandler.ReturnContacts();
+
+        int size = allContacts.size();
+        System.out.println("Size = "+size);
+        //注意：实例化 contactsModel！！！
+
+        /**************************************************/
+        DefaultListModel oldModel = contactsModel;
+        contactsModel = new DefaultListModel();
+        contactsModel.setSize(size); // Copy data from vector allContacts to list contactsModel
+        /******************************************/
+
+        int onidx = 1, offidx = size - 1;
+        Contact contact = null;
+        Contact oldContact = null;
+        int tmpUid;
+
+        int i = 0;
+
+        do{
+            contact = allContacts.elementAt(i);
+            tmpUid=contact.getUid();
+
+            if(!isInit){
+
+                oldContact=
+                        getContactByuid(tmpUid, oldModel);
+                contact.setSender(
+                        oldContact.isSender());
+            }
+
+            if(tmpUid == this.logUID){
+
+                contactsModel.setElementAt(contact, 0);
+
+            }else if(contact.getOnline() == 1){
+                contactsModel.setElementAt(contact, onidx);
+                onidx++;
+
+            }
+            else{
+
+                contactsModel.setElementAt(contact, offidx);
+                offidx--;
+            }
+            i++;
+        }while(i < size);
+
+
+        // After refreshing, return contactsModel
+        return contactsModel;
     }
 
 
 
     private Contact getContactByuid(int uid,DefaultListModel Model){
-        // 通过参数uid找到列表中索引从而找到相应的实体对象contact
+
         // Find the index in the list through the parameter uid to find the corresponding entity object contact
         Contact resultContact = null;
         Contact tmpContact = new Contact();
@@ -147,28 +194,10 @@ public class MainForm extends javax.swing.JFrame{
     }
 
 
-
-    private ChatBox getChatBox(Contact bfContact,Contact gfContact){
-
-        ChatBox chatBox = null;
-        try {
-
-            chatBox = boxRegistry.get(gfContact); // 给实体chatBox赋公共存储区boxRegistry中gfContacts实体的信息
-            if(chatBox == null)
-            { // 给实体chatBox赋公共存储区boxRegistry中gfContacts实体的信息
-                chatBox = new ChatBox(bfContact,gfContact);
-                //记录其他人的窗口！！！
-                boxRegistry.put(gfContact,chatBox);
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-        return chatBox;
-    }
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {
         // TODO add your handling code here:
+        LogOffHandler logOffHandler = new LogOffHandler();
+        logOffHandler.LogOff(this.logUID);
 
     }
 }
